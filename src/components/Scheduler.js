@@ -1,24 +1,42 @@
 import React from 'react'
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 
 
-function Scheduler() {
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
-    const [interval, setInterval] = useState('');
+function Scheduler(props) {
+    const [startTime, setStartTime] = useState(props.horaInicio);
+    const [endTime, setEndTime] = useState(props.horaFim);
+    const [interval, setInterval] = useState(props.intervalo);
+    const [startTimeAfter, setStartTimeAfter] = useState(props.horaInicioTarde);
+    const [endTimeAfter, setEndTimeAfter] = useState(props.horaFimTarde);
     const [result, setResult] = useState([]);
+    const [resultAfternoon, setResultAfternoon] = useState([]);
+    useEffect( () => {
+      generateTimeRangeToMorning()
+      generateTimeRangeToAfternoon()
+
+    },[])
+
+    const generateTimeRangeToAfternoon = () => {
+      const startAfter = new Date(`2024-01-01T${startTimeAfter}`);
+      const endAfter = new Date(`2024-01-01T${endTimeAfter}`);
+      const intervalValueAfter = parseInt(interval, 10);
+      const timeRange = [];
+      let currentTime = startAfter;
   
-    const generateTimeRange = () => {
+      while (currentTime <= endAfter) {
+        timeRange.push(currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        currentTime.setMinutes(currentTime.getMinutes() + intervalValueAfter);
+      }
+ 
+      setResultAfternoon(timeRange);
+    };
+  
+    const generateTimeRangeToMorning = () => {
       const start = new Date(`2024-01-01T${startTime}`);
       const end = new Date(`2024-01-01T${endTime}`);
       const intervalValue = parseInt(interval, 10);
-  
-      if (isNaN(start.getTime()) || isNaN(end.getTime()) || isNaN(intervalValue)) {
-        setResult(['Por favor, insira horários e intervalo válidos.']);
-        return;
-      }
-  
+      console.log("Na manhã o horaio é: "+props.horaFim)
       const timeRange = [];
       let currentTime = start;
   
@@ -32,25 +50,18 @@ function Scheduler() {
   
     return (
       <div>
-        <h1>Gerador de Intervalo de Tempo</h1>
-        <label>
-          Horário de Início:
-          <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
-        </label>
-        <label>
-          Horário de Fim:
-          <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
-        </label>
-        <label>
-          Intervalo (minutos):
-          <input type="number" value={interval} onChange={(e) => setInterval(e.target.value)} />
-        </label>
-        <button onClick={generateTimeRange}>Gerar</button>
-  
         <div>
-          <h2>Resultado:</h2>
+          <h2>Resultado da manhã:</h2>
           <ul>
             {result.map((time, index) => (
+              <li key={index}>{time}</li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h2>Resultado da tarde:</h2>
+          <ul>
+            {resultAfternoon.map((time, index) => (
               <li key={index}>{time}</li>
             ))}
           </ul>
