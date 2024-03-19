@@ -6,6 +6,7 @@ import DaysList from "./DaysList";
 function MainPage() {
   const [escolha, setEscolha] = useState(true);
   const [data, setData] = useState("")
+  const [day, setDay] = useState("")
  
   
   function nextOp(){
@@ -18,7 +19,7 @@ function MainPage() {
         {escolha  ? (
             <h2>
                 Escolha os serviço
-                <DaysList/>
+                <DaysList setDay={setDay}/>
             </h2>
         ) : (
         <div>
@@ -29,10 +30,10 @@ function MainPage() {
 
         }
         <div>
-          {data}
         </div>
         <button onClick={nextOp}>Mostrar Horarios </button>
-        
+        { day !== "" && data !== ""  && (<div> O horario escolhido foi {data} e o dia foi {day} </div>)}
+
       </div>
     </>
   );

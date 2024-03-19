@@ -1,22 +1,33 @@
-import React from 'react'
-import { useState, useEffect} from 'react';
+import React from "react";
+import { useState, useEffect } from "react";
 
-function DaysList() {
-
+function DaysList(props) {
   const [WeekDay, setWeekDay] = useState([]);
   const [AtualDate, setAtualDate] = useState(new Date());
   const dataRef = new Date(new Date());
 
   const loadDays = () => {
-    const novaData = new Date(AtualDate.getFullYear(), AtualDate.getMonth(), AtualDate.getDate() + 7);
+    const novaData = new Date(
+      AtualDate.getFullYear(),
+      AtualDate.getMonth(),
+      AtualDate.getDate() + 7
+    );
     setAtualDate(novaData);
     const novosWeekDay = getWeekDay(novaData);
     setWeekDay([...WeekDay, ...novosWeekDay]);
   };
 
   const returnDays = () => {
-    const novaData = new Date(AtualDate.getFullYear(), AtualDate.getMonth(), AtualDate.getDate() - 7);
-    if (novaData.getDate()>= dataRef.getDate() && novaData.getMonth()>= dataRef.getMonth() && novaData.getFullYear() >= dataRef.getFullYear()) {
+    const novaData = new Date(
+      AtualDate.getFullYear(),
+      AtualDate.getMonth(),
+      AtualDate.getDate() - 7
+    );
+    if (
+      novaData.getDate() >= dataRef.getDate() &&
+      novaData.getMonth() >= dataRef.getMonth() &&
+      novaData.getFullYear() >= dataRef.getFullYear()
+    ) {
       setAtualDate(novaData);
       const novosWeekDay = getWeekDay(novaData);
       setWeekDay(novosWeekDay);
@@ -26,10 +37,17 @@ function DaysList() {
   const getWeekDay = (data) => {
     const days = [];
     for (let i = 0; i < 7; i++) {
-      const dia = new Date(data.getFullYear(), data.getMonth(), data.getDate() + i);
+      const dia = new Date(
+        data.getFullYear(),
+        data.getMonth(),
+        data.getDate() + i
+      );
       days.push({
-        weekDay: dia.toLocaleDateString('pt-BR', { weekday: 'long' }),
-        date: dia.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' }),
+        weekDay: dia.toLocaleDateString("pt-BR", { weekday: "long" }),
+        date: dia.toLocaleDateString("pt-BR", {
+          day: "numeric",
+          month: "long",
+        }),
       });
     }
     return days;
@@ -46,7 +64,9 @@ function DaysList() {
       <ul>
         {WeekDay.map((days) => (
           <li key={days.date}>
-            {days.weekDay} - {days.date}
+            <button onClick={()=> props.setDay(days.weekDay)}>
+              {days.weekDay} - {days.date}
+            </button>
           </li>
         ))}
       </ul>
@@ -56,4 +76,4 @@ function DaysList() {
   );
 }
 
-export default DaysList
+export default DaysList;
