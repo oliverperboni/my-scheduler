@@ -2,19 +2,27 @@ import React from "react";
 import { useEffect, useState } from "react";
 
 function Scheduler(props) {
-  const [startTime, setStartTime] = useState(props.horaInicio);
-  const [endTime, setEndTime] = useState(props.horaFim);
-  const [interval, setInterval] = useState(props.intervalo);
-  const [startTimeAfter, setStartTimeAfter] = useState(props.horaInicioTarde);
-  const [endTimeAfter, setEndTimeAfter] = useState(props.horaFimTarde);
+  // separando as props
+  const {horaInicio,horaFim, intervalo, horaInicioTarde, horaFimTarde} = props
+
+  //setando os UserStates que vamos usar
+  const [startTime, setStartTime] = useState(horaInicio);
+  const [endTime, setEndTime] = useState(horaFim);
+  const [interval, setInterval] = useState(intervalo);
+  const [startTimeAfter, setStartTimeAfter] = useState(horaInicioTarde);
+  const [endTimeAfter, setEndTimeAfter] = useState(horaFimTarde);
   const [result, setResult] = useState([]);
   const [resultAfternoon, setResultAfternoon] = useState([]);
+  
+
+  //dar load assim que a pagina é carregada
   useEffect(() => {
     generateTimeRangeToMorning();
     generateTimeRangeToAfternoon();
     
   }, []);
 
+  //função para dar load dos horarios de manhã
   const generateTimeRangeToAfternoon = () => {
     const startAfter = new Date(`2024-01-01T${startTimeAfter}`);
     const endAfter = new Date(`2024-01-01T${endTimeAfter}`);
@@ -35,11 +43,12 @@ function Scheduler(props) {
     setResultAfternoon(timeRange);
   };
 
+
+  //função para dar load dos horarios de tarde
   const generateTimeRangeToMorning = () => {
     const start = new Date(`2024-01-01T${startTime}`);
     const end = new Date(`2024-01-01T${endTime}`);
     const intervalValue = parseInt(interval, 10);
-    console.log("Na manhã o horaio é: " + props.horaFim);
     const timeRange = [];
     let currentTime = start;
 

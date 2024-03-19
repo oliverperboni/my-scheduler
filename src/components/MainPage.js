@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import Scheduler from "./Scheduler";
-
+import DaysList from "./DaysList";
 
 function MainPage() {
   const [escolha, setEscolha] = useState(true);
@@ -18,6 +18,7 @@ function MainPage() {
         {escolha  ? (
             <h2>
                 Escolha os serviço
+                <DaysList/>
             </h2>
         ) : (
         <div>
