@@ -1,10 +1,45 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 function DaysList(props) {
   const [WeekDay, setWeekDay] = useState([]);
   const [AtualDate, setAtualDate] = useState(new Date());
+  const [dayWorked, setDayWorked] = useState([0,1,2,3,4,5])
   const dataRef = new Date(new Date());
+
+
+  let config = {
+    method: "get",
+    maxBodyLength: Infinity,
+    url: "http://localhost:8080/api/v1/employee/1",
+    headers: {},
+  };
+
+ 
+  function workDays() {
+    return new Promise((resolve, reject) => {
+      axios.request(config)
+        .then((response) => {
+          resolve(response.data.workDays);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+  workDays()
+  .then((workDays) => {
+    setDayWorked(workDays); 
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+  console.log(dayWorked)
+  
+  // Example usage:
+ 
+
 
   const loadDays = () => {
     const novaData = new Date(
@@ -13,7 +48,7 @@ function DaysList(props) {
       AtualDate.getDate() + 7
     );
     setAtualDate(novaData);
-    const novosWeekDay = getWeekDay(novaData);
+    const novosWeekDay = getWeekDay(novaData, dayWorked);
     setWeekDay([...WeekDay, ...novosWeekDay]);
   };
 
@@ -23,38 +58,48 @@ function DaysList(props) {
       AtualDate.getMonth(),
       AtualDate.getDate() - 7
     );
+    console.log(novaData.getDate() >= dataRef.getDate());
+    console.log(novaData.getMonth() >= dataRef.getMonth());
+    console.log(novaData.getFullYear() >= dataRef.getFullYear());
     if (
-      novaData.getDate() >= dataRef.getDate() &&
+      novaData.getDate() >= dataRef.getDate() ||
+      (novaData.getDate() <= dataRef.getDate() &&
+        novaData.getMonth() > dataRef.getMonth())
+    ) {
+      setAtualDate(novaData);
+      const novosWeekDay = getWeekDay(novaData, dayWorked);
+      setWeekDay(novosWeekDay);
+    } else if (
+      novaData.getDate() <= dataRef.getDate() &&
       novaData.getMonth() >= dataRef.getMonth() &&
       novaData.getFullYear() >= dataRef.getFullYear()
     ) {
-      setAtualDate(novaData);
-      const novosWeekDay = getWeekDay(novaData);
-      setWeekDay(novosWeekDay);
     }
   };
 
-  const getWeekDay = (data) => {
+ 
+  const getWeekDay = (date, dayNumbers) => {
     const days = [];
-    for (let i = 0; i < 7; i++) {
-      const dia = new Date(
-        data.getFullYear(),
-        data.getMonth(),
-        data.getDate() + i
+    dayNumbers.forEach((dayNumber) => {
+      const dayToAdd = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate() + (dayNumber - 1)
       );
       days.push({
-        weekDay: dia.toLocaleDateString("pt-BR", { weekday: "long" }),
-        date: dia.toLocaleDateString("pt-BR", {
+        weekDay: dayToAdd.toLocaleDateString("pt-BR", { weekday: "long" }),
+        date: dayToAdd.toLocaleDateString("pt-BR", {
           day: "numeric",
           month: "long",
         }),
       });
-    }
+    });
     return days;
   };
 
   useEffect(() => {
-    const novosWeekDay = getWeekDay(AtualDate);
+    
+    const novosWeekDay = getWeekDay(AtualDate, dayWorked);
     setWeekDay(novosWeekDay);
   }, [AtualDate]);
 
@@ -64,7 +109,7 @@ function DaysList(props) {
       <ul>
         {WeekDay.map((days) => (
           <li key={days.date}>
-            <button onClick={()=> props.setDay(days.weekDay)}>
+            <button onClick={() => props.setDay(days.weekDay)}>
               {days.weekDay} - {days.date}
             </button>
           </li>
