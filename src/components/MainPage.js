@@ -2,6 +2,8 @@ import React from "react";
 import { useState } from "react";
 import Scheduler from "./Scheduler";
 import DaysList from "./DaysList";
+import Employee from "./Employee";
+
 
 function MainPage() {
   const [escolha, setEscolha] = useState(true);
@@ -30,6 +32,7 @@ function MainPage() {
 
         }
         <div>
+          <Employee/>
         </div>
         <button onClick={nextOp}>Mostrar Horarios </button>
         { day !== "" && data !== ""  && (<div> O horario escolhido foi {data} e o dia foi {day} </div>)}
