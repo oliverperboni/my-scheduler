@@ -10,6 +10,7 @@ function MainPage() {
   // const [escolha1, setEscolha1] = useState(true);
   const [data, setData] = useState("");
   const [day, setDay] = useState("");
+  const [showMarcarButton, setShowMarcarButton] = useState(false);
 
   // function nextOp() {
   //   setEscolha(!escolha);
@@ -77,6 +78,7 @@ function MainPage() {
         setCurrentPage("DayList");
         break;
       case "DayList":
+        setShowMarcarButton(true);
         setCurrentPage("Scheduler");
         break;
       default:
@@ -130,9 +132,9 @@ function MainPage() {
       <button onClick={prevPage} disabled={currentPage === "Service"}>
         Previous
       </button>
-      <button onClick={nextPage} disabled={currentPage === "Scheduler"}>
-        Next
-      </button>
+      {currentPage !== 'Scheduler' && <button onClick={nextPage}>Next</button>}
+      {showMarcarButton && <button>Marcar</button>}
+
     </div>
   );
 }
