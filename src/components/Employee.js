@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const Employee = () => {
+const Employee = (props) => {
   const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const Employee = () => {
       <ul>
         {employees.map((employee) => (
           <li key={employee.id}>
-            <button>{employee.name}</button>
+            <button onClick={()=> props.setEmployee(employee.id)}>{employee.name}</button>
           </li>
         ))}
       </ul>

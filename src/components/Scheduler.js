@@ -53,7 +53,7 @@ function Scheduler(props) {
     let currentTime = start;
 
     while (currentTime <= end) {
-      timeRange.push(
+      timeRange.push( 
         currentTime.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",

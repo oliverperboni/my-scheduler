@@ -4,69 +4,16 @@ import Scheduler from "./Scheduler";
 import DaysList from "./DaysList";
 import Employee from "./Employee";
 import Services from "./Services";
+import axios from "axios";
 
 function MainPage() {
   // const [escolha, setEscolha] = useState(true);
   // const [escolha1, setEscolha1] = useState(true);
   const [data, setData] = useState("");
   const [day, setDay] = useState("");
+  const [employee,setEmployee] = useState("")
+  const [service,setService] = useState("")
   const [showMarcarButton, setShowMarcarButton] = useState(false);
-
-  // function nextOp() {
-  //   setEscolha(!escolha);
-  // }
-  // function nextOp1() {
-  //   setEscolha1(!escolha1);
-  // }
-  // return (
-  //   <>
-  //     <div>
-  //       <h2>MainPage</h2>
-  //       {escolha1 ? (
-  //         <div>
-
-  //           <Services />
-  //           <button onClick={nextOp1}>Proximo</button>
-  //         </div>
-  //       ) : (
-  //         <div>
-
-  //           <Employee />
-  //           <button onClick={nextOp1}>Voltar</button>
-  //         </div>
-  //       )}
-  //       {escolha ? (
-  //         <div>
-  //           <h2>
-  //             <DaysList setDay={setDay} />
-  //           </h2>
-  //           <button onClick={nextOp}>Mostrar Horarios </button>
-  //         </div>
-  //       ) : (
-  //         <div>
-  // <Scheduler
-  //   horaInicio="08:00"
-  //   horaFim="13:30"
-  //   intervalo="30"
-  //   horaInicioTarde="16:00"
-  //   horaFimTarde="22:00"
-  //   setData={setData}
-  // />
-  //           <button onClick={nextOp}>Voltar</button>
-  //         </div>
-  //       )}
-  //       <div></div>
-  //       <button onClick={nextOp}>Mostrar Horarios </button>
-  //       {day !== "" && data !== "" && (
-  //         <div>
-  //           {" "}
-  //           O horario escolhido foi {data} e o dia foi {day}{" "}
-  //         </div>
-  //       )}
-  //     </div>
-  //   </>
-  // );
-
   const [currentPage, setCurrentPage] = useState("Service");
 
   const nextPage = () => {
@@ -85,6 +32,42 @@ function MainPage() {
         break;
     }
   };
+
+  const sendAppointment = () => {
+    let dados = JSON.stringify({
+      "employee": {
+        "id": employee
+      },
+      "service": {
+        "id": service
+      },
+      "user": {
+        "id": 2
+      },
+      "date": day,
+      "time": data,
+
+    });
+    
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'http://localhost:8080/api/v1/appointment',
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data : dados
+    };
+    
+    axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    setCurrentPage("Service")
+  }
 
   const prevPage = () => {
     switch (currentPage) {
@@ -105,14 +88,15 @@ function MainPage() {
   const renderComponent = () => {
     switch (currentPage) {
       case "Service":
-        return <Services />;
+        return <Services setService={setService} />;
       case "Employee":
-        return <Employee />;
+        return <Employee setEmployee={setEmployee} />;
       case "DayList":
         return <DaysList setDay={setDay} />;
       case "Scheduler":
         return (
           <Scheduler
+            employee={employee}
             horaInicio="08:00"
             horaFim="13:30"
             intervalo="30"
@@ -133,8 +117,8 @@ function MainPage() {
         Previous
       </button>
       {currentPage !== 'Scheduler' && <button onClick={nextPage}>Next</button>}
-      {showMarcarButton && <button>Marcar</button>}
-
+      {showMarcarButton && <button onClick={sendAppointment}>Marcar</button>}
+      dia:{day} data: {data} employee: {employee}  service: {service}
     </div>
   );
 }

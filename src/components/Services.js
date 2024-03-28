@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Services = () => {
+const Services = (props) => {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const Services = () => {
       <ul>
         {services.map(service => (
           <li key={service.id}>
-            <button>
+            <button onClick={()=> props.setService(service.id)}>
             <strong>Name:</strong> {service.name}<br />
             <strong>Duration:</strong> {formatDuration(service.duration)}<br />
             <strong>Price:</strong> ${service.price}
