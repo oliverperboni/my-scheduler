@@ -35,24 +35,21 @@ function MainPage() {
 
   const sendAppointment = () => {
     let dados = JSON.stringify({
-      "employee": {
-        "id": employee
-      },
-      "service": {
-        "id": service
-      },
-      "user": {
-        "id": 2
-      },
+      // "user": {
+      //   "id": 2
+      // },
       "date": day,
       "time": data,
-
+      "employee": employee,
+      "service": service
+      
     });
+    console.log(dados)
     
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'http://localhost:8080/api/v1/appointment',
+      url:'http://localhost:8000/my_scheduler_api/appointment',
       headers: { 
         'Content-Type': 'application/json'
       },
