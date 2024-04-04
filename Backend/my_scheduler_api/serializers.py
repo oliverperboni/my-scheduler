@@ -18,3 +18,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = "__all__"
+        
+class ClientSerializer(serializers.ModelSerializer): 
+    class Meta:
+            model = Client
+            fields = "__all__"

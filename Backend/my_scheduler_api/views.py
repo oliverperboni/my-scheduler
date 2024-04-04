@@ -40,11 +40,24 @@ def services(request):
             return JsonResponse("Saved",safe=False)  
 
 @api_view(['PUT','GET',"DELETE"])  
-def employeeId(request,pk):
-    if request.method == "GET":
+def employee_details(request, pk):
+    try:
         employee = Employee.objects.get(pk=pk)
-        serialize = EmployeeSerializer(employee,many=False)
-        return JsonResponse(serialize.data,safe=False)
+    except Employee.DoesNotExist:
+        return Response({"error": "Employee does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "GET":
+        serialize = EmployeeSerializer(employee, many=False)
+        return Response(serialize.data)
+    elif request.method == "PUT":
+        serialize = EmployeeSerializer(employee, data=request.data)
+        if serialize.is_valid():
+            serialize.save()
+            return Response(serialize.data)
+        return Response(serialize.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "DELETE":
+        employee.delete()
+        return Response({"message": "Employee deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST','GET'])  
 def appointment(request):
@@ -64,7 +77,95 @@ def appointment(request):
             return JsonResponse(appointment_data, status=201)
          # Handle other HTTP methods if necessary
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
+@api_view(['GET', 'PUT', 'DELETE'])
+def service_detail(request, pk):
+    try:
+        service = Servicos.objects.get(pk=pk)
+    except Servicos.DoesNotExist:
+        return Response({"error": "Service does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = ServiceSerializer(service)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = ServiceSerializer(service, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        service.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def appointment_detail(request, pk):
+    try:
+        appointment = Appointment.objects.get(pk=pk)
+    except Appointment.DoesNotExist:
+        return Response({"error": "Appointment does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = AppointmentSerializer(appointment)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = AppointmentSerializer(appointment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        appointment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['GET', 'POST'])
+def client(request):
+    if request.method == 'GET':
+        clients = Client.objects.all()
+        serializer = ClientSerializer(clients, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = ClientSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET', 'PUT', 'DELETE'])
+def client_detail(request, pk):
+    try:
+        client = Client.objects.get(pk=pk)
+    except Client.DoesNotExist:
+        return Response({"error": "Client does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = ClientSerializer(client)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = ClientSerializer(client, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        client.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+def client_appointments(request, client_id):
+    try:
+        appointments = Appointment.objects.filter(client_id=client_id)
+        serializer = AppointmentSerializer(appointments, many=True)
+        return Response(serializer.data)
+    except Appointment.DoesNotExist:
+        return Response({"error": "Client appointments not found"}, status=status.HTTP_404_NOT_FOUND)
