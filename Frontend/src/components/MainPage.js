@@ -5,7 +5,7 @@ import DaysList from "./DaysList";
 import Employee from "./Employee";
 import Services from "./Services";
 import axios from "axios";
-
+import ClientAppointments from "./ClientAppointments";
 function MainPage() {
   // const [escolha, setEscolha] = useState(true);
   // const [escolha1, setEscolha1] = useState(true);
@@ -35,12 +35,10 @@ function MainPage() {
 
   const sendAppointment = () => {
     let dados = JSON.stringify({
-      // "user": {
-      //   "id": 2
-      // },
       "date": day,
       "time": data,
       "employee": employee,
+      "client": 1,
       "service": service
       
     });
@@ -116,6 +114,13 @@ function MainPage() {
       {currentPage !== 'Scheduler' && <button onClick={nextPage}>Next</button>}
       {showMarcarButton && <button onClick={sendAppointment}>Marcar</button>}
       dia:{day} data: {data} employee: {employee}  service: {service}
+
+      <div>
+        <h2>Minhas marcações:</h2>
+        <div>
+          <ClientAppointments clientId={1}/>
+        </div>
+      </div>
     </div>
   );
 }

@@ -165,7 +165,7 @@ def client_detail(request, pk):
 def client_appointments(request, client_id):
     try:
         appointments = Appointment.objects.filter(client_id=client_id)
-        serializer = AppointmentSerializer(appointments, many=True)
+        serializer = AppointmentSerializer1(appointments, many=True)
         return Response(serializer.data)
     except Appointment.DoesNotExist:
         return Response({"error": "Client appointments not found"}, status=status.HTTP_404_NOT_FOUND)

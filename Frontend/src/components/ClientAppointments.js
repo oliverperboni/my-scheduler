@@ -7,7 +7,7 @@ const ClientAppointments = ({ clientId }) => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await fetch(`/api/clients/${clientId}/appointments/`);
+        const response = await fetch(`http://localhost:8000/my_scheduler_api/clients/${clientId}/appointments/`);
         if (!response.ok) {
           throw new Error('Failed to fetch appointments');
         }
@@ -36,7 +36,7 @@ const ClientAppointments = ({ clientId }) => {
         <ul>
           {appointments.map(appointment => (
             <li key={appointment.id}>
-              {appointment.date} - {appointment.time}
+              {appointment.date} - {appointment.time} - {appointment.service.name} - {appointment.employee.name}
             </li>
           ))}
         </ul>
