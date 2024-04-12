@@ -9,7 +9,7 @@ const Employee = (props) => {
     const fetchEmployees = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/my_scheduler_api/employees"
+          `http://localhost:8000/my_scheduler_api/company/${props.companyId}/employees/`
         );
         setEmployees(response.data); // Assuming the API response is an array of employee objects
       } catch (error) {
@@ -18,7 +18,7 @@ const Employee = (props) => {
     };
 
     fetchEmployees();
-  }, []);
+  },);
 
   return (
     <div>
