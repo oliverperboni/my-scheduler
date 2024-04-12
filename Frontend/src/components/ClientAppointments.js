@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-const ClientAppointments = ({ clientId }) => {
+const ClientAppointments = () => {
   const [appointments, setAppointments] = useState([]);
+  const { clientId } = useParams();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -1,3 +1,4 @@
+import AppointmentPage from "./components/AppointmentPage";
 import ClientAppointments from "./components/ClientAppointments";
 import MainPage from "./components/MainPage";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -9,8 +10,11 @@ function App() {
         <Route exact path="/">
           <MainPage/>
         </Route>
-        <Route path="/appointment">
-          <ClientAppointments clientId={1}/>
+        <Route path="/appointment/:clientId">
+          <ClientAppointments/>
+        </Route>
+        <Route path="/appointment_company/:companyId">
+          <AppointmentPage/>
         </Route>
       </Switch>
     </Router>

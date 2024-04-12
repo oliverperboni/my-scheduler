@@ -5,10 +5,12 @@ const Services = (props) => {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
+    console.log(`http://localhost:8000/my_scheduler_api/company/${props.companyId}/services`)
     const fetchServices = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/my_scheduler_api/services"
+          `http://localhost:8000/my_scheduler_api/company/${props.companyId}/services`
+         
         );
         setServices(response.data); // Assuming the API response is an array of service objects
       } catch (error) {
@@ -17,7 +19,7 @@ const Services = (props) => {
     };
 
     fetchServices();
-  }, []);
+  },[props.companyId]);
 
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");

@@ -169,3 +169,61 @@ def client_appointments(request, client_id):
         return Response(serializer.data)
     except Appointment.DoesNotExist:
         return Response({"error": "Client appointments not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+@api_view(['GET', 'POST'])
+def company_list(request):
+    if request.method == 'GET':
+        companies = Company.objects.all()
+        serializer = CompanySerializer(companies, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    
+    elif request.method == 'POST':
+        serializer = CompanySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def company_detail(request, pk):
+    try:
+        company = Company.objects.get(pk=pk)
+    except Company.DoesNotExist:
+        return JsonResponse({'error': 'Company does not exist'}, status=404)
+
+    if request.method == 'GET':
+        serializer = CompanySerializer(company)
+        return JsonResponse(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = CompanySerializer(company, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        company.delete()
+        return JsonResponse({'message': 'Company deleted successfully'}, status=204)
+    
+    
+@api_view(['GET'])
+def company_services(request, company_id):
+    try:
+        services = Servicos.objects.filter(company_id=company_id)
+        serializer = ServiceSerializer(services, many=True)
+        return Response(serializer.data)
+    except Servicos.DoesNotExist:
+        return Response({"error": "Services for this company not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+def company_employees(request, company_id):
+    try:
+        employees = Employee.objects.filter(company_id=company_id)
+        serializer = EmployeeSerializer(employees, many=True)
+        return Response(serializer.data)
+    except Employee.DoesNotExist:
+        return Response({"error": "Employees for this company not found"}, status=status.HTTP_404_NOT_FOUND)
+
